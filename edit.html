@@ -1,0 +1,111 @@
+<html>
+    <head>
+        <title>Edit Page</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    </head>
+    <body>
+        <div class="container">
+    
+            <form>
+        
+                <div class="form-group">
+                    <label for="food_name">Craving's Food Name</label>
+                    <input type="text" class="form-control" name='food_name' id="food_name" placeholder="Your craving food here">
+                </div>
+              
+                <div class="form-group">
+                    <label for="food_place">Resturant</label>
+                    <input type="text" class="form-control" name='food_place' id="food_place" placeholder="Resturant here">
+                </div>
+                <div class="form-group">
+                    <label for="food_delivery">Take out or Delivery</label>
+                    <input type="text" class="form-control" name='food_delivery' id="food_delivery" placeholder="Take out or Delivery here">
+                </div>
+                <input type="submit" value="Add food" class="btn btn-primary" />
+        
+            </form>
+            
+            
+        
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+        <script>
+       //Pass the food_index to the "saveToLocalStorage" function WITH the food_object.
+       //Instead of foodArray.push()Use foodArray[food_index] = foodObject
+		    
+            var query_parameters = new URLSearchParams(window.location.search)
+            
+            var food_index = query_parameters.get('id')
+
+            var food = JSON.parse(localStorage.getItem('food'));
+
+            var editFood = food[food_index]
+
+            $("#food_name").val(editFood.food_name)
+            $("#food_place").val(editFood.food_place)
+            $("#food_delivery").val(editFood.food_delivery)
+
+            $('form').submit(function(event) {
+                
+                event.preventDefault();
+                
+                // 1. get data from the page
+                // this method takes all of the form elements
+                // from the page and creates one big-ass array
+                // of data that we can then manipulate
+                var formData = $(this).serializeArray();
+                console.log("Form Data!", formData);
+                
+                // 1.b. condense data into an object
+                var foodObject = condenseData(formData);
+                
+                // 2. store the data somewhere?
+                saveFoodToLocalStorage(foodObject);
+                
+                window.location.href = "crud.html";
+                
+                // TODO .reset() the form so after you add
+                // a pet, the text you just entered is removed
+                
+            });
+            
+            function condenseData(formData) {
+                // create empty object
+                var object = {};
+                
+                // loop through the interable the rows
+                $(formData).each(function() {
+                    // "this" references the row your looping over
+                    console.log(this);
+                    
+                    // add key/values to object
+                    object[this.name] = this.value;
+                });
+                
+                console.log("Form data in THE OBJECT!", object);
+                
+                // return the object
+                return object;
+            }
+            
+            function saveFoodToLocalStorage(foodObject) {
+                var foodArray = JSON.parse(localStorage.getItem("food"));
+                
+                // if petsArray doesnt exist, we need to make it 
+                // exist and make it an empty array
+                if(!foodArray) {
+                    foodArray = [];
+                }
+                //changed
+                foodArray[food_index] = foodObject;
+            
+                localStorage.setItem('food', JSON.stringify(foodArray));
+            }
+        
+            		
+        </script>
+    </body>
+</html>
